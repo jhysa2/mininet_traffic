@@ -15,7 +15,7 @@ from topology import MyTopo
 class DDoSConfig:
     """Configuration parameters for the DDoS attack simulation."""
     # Controller IP
-    CONTROLLER_IP = "192.168.0.101"
+    CONTROLLER_IP = "10.0.2.5"
     
     # Default target is the server h1, but can be overridden
     DEFAULT_TARGET_IP = "10.0.0.1"
