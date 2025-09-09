@@ -11,14 +11,13 @@ from mininet.node import OVSKernelSwitch, RemoteController
 # Import the topology from the central file
 from topology import MyTopo
 
-# --- IMPROVEMENT: A configuration class for DDoS parameters ---
 class DDoSConfig:
     """Configuration parameters for the DDoS attack simulation."""
     # Controller IP
     CONTROLLER_IP = "10.0.2.5"
     
     # Default target is the server h1, but can be overridden
-    DEFAULT_TARGET_IP = "10.0.0.1"
+    DEFAULT_TARGET_IP = "10.0.2.5"
 
 def run_tcp_syn_flood(attacker, target_ip, duration_sec):
     """Commands the attacker to run a TCP SYN Flood."""
@@ -66,7 +65,6 @@ def start_attack_simulation(attack_type, num_attackers, duration_sec, target_ip)
         print(f"Warning: Number of attackers requested ({num_attackers}) is more than available hosts ({len(potential_attackers)}). Using all available hosts.")
         num_attackers = len(potential_attackers)
 
-    # --- IMPROVEMENT: Launch attacks concurrently ---
     # Randomly select the specified number of hosts to act as attackers
     attackers = random.sample(potential_attackers, num_attackers)
     attack_function = attack_functions[attack_type]
@@ -88,13 +86,12 @@ def start_attack_simulation(attack_type, num_attackers, duration_sec, target_ip)
 if __name__ == '__main__':
     setLogLevel('info')
     
-    # --- IMPROVEMENT: Make the script a command-line tool ---
     if len(sys.argv) != 5:
-        print("\nUsage: sudo python enhanced_ddos_generator.py <attack_type> <num_attackers> <duration_sec> <target_ip>")
+        print("\nUsage: sudo python AttackTraffic.py <attack_type> <num_attackers> <duration_sec> <target_ip>")
         print("  <attack_type>: tcp, udp, or icmp")
         print("  <num_attackers>: e.g., 5")
         print("  <duration_sec>: e.g., 120")
-        print("  <target_ip>: e.g., 10.0.0.1\n")
+        print("  <target_ip>: e.g., 10.0.2.5\n")
         sys.exit(1)
 
     try:
