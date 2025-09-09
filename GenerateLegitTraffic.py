@@ -7,7 +7,6 @@ from mininet.link import TCLink
 from mininet.log import setLogLevel
 from mininet.node import OVSKernelSwitch, RemoteController
 
-# --- IMPROVEMENT: Import the topology instead of redefining it ---
 from topology import MyTopo
 
 # --- IMPROVEMENT: Add a configuration section for easy changes ---
@@ -75,9 +74,8 @@ def start_simulation():
     
     print(f"Starting benign traffic generation for {TrafficConfig.SIMULATION_DURATION_SEC} seconds...")
     
-    # --- IMPROVEMENT: Main loop is now concurrent and random ---
-    end_time = datetime.now() + datetime.timedelta(seconds=TrafficConfig.SIMULATION_DURATION_SEC)
-    
+    end_time = datetime.now() + timedelta(seconds=TrafficConfig.SIMULATION_DURATION_SEC)
+
     while datetime.now() < end_time:
         print(f"\n--- Generating a new round of traffic at {datetime.now().strftime('%H:%M:%S')} ---")
         
