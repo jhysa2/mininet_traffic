@@ -93,7 +93,7 @@ def start_simulation():
                 action(host)
 
         # Let the background commands run for a random interval
-        sleep_duration = random.randint(15, 30)
+        sleep_duration = random.randint(5, 8)
         print(f"\nSleeping for {sleep_duration} seconds...")
         sleep(sleep_duration)
 
