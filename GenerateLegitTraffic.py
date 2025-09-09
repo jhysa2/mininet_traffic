@@ -23,8 +23,7 @@ class TrafficConfig:
     SERVER_IP = "10.0.0.1"
     
     # Controller IP
-    CONTROLLER_IP = "192.168.0.101"
-
+    CONTROLLER_IP = "10.0.2.5"
 # --- IMPROVEMENT: Refactor traffic generation into separate functions ---
 def generate_random_ping(src_host, all_hosts):
     """Makes a host ping another random host in the background."""
